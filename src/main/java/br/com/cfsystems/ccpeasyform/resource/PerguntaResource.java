@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,11 +42,13 @@ public class PerguntaResource {
 	private ApplicationEventPublisher publisher;
 	
 	@GetMapping
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_PERGUNTA') and #oauth2.hasScope('read')")
 	public Page<Pergunta> pesquisar(PerguntaFilter perguntaFilter, Pageable pageable){
 		return perguntaRepository.filtrar(perguntaFilter, pageable);
 	}
 
 	@PostMapping
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_CATEGORIA') and #oauth2.hasScope('read')")
 	public ResponseEntity<Pergunta> criar(@Valid @RequestBody Pergunta pergunta, HttpServletResponse response) {
 		Pergunta perguntaSalva = perguntaService.salvar(pergunta);
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, perguntaSalva.getId()));
@@ -53,6 +56,7 @@ public class PerguntaResource {
 	}
 	
 	@GetMapping("/{id}")
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_PERGUNTA') and #oauth2.hasScope('read')")
 	public ResponseEntity<Pergunta> buscarPeloId(@PathVariable Long id) {
 		Optional<Pergunta> pergunta = perguntaRepository.findById(id);
 		return pergunta.isPresent() ? ResponseEntity.ok(pergunta.get()) : ResponseEntity.notFound().build();
@@ -60,11 +64,13 @@ public class PerguntaResource {
 	
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_CATEGORIA') and #oauth2.hasScope('read')")
 	public void remover(@PathVariable Long id) {
 		perguntaRepository.deleteById(id);
 	}
 	
 	@PutMapping("/{id}")
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_CATEGORIA') and #oauth2.hasScope('read')")
 	public ResponseEntity<Pergunta> atualizar(@PathVariable Long id, @Valid @RequestBody Pergunta pergunta) {
 		Pergunta perguntaSalva = perguntaService.atualizar(id, pergunta);
 		return ResponseEntity.ok(perguntaSalva);
@@ -72,6 +78,7 @@ public class PerguntaResource {
 	
 	@PutMapping("/{id}/emUso")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_CATEGORIA') and #oauth2.hasScope('read')")
 	public void atualizarPropriedadeEmUso(@PathVariable Long id) {
 		perguntaService.atualizarPropriedadeEmUso(id);
 	}

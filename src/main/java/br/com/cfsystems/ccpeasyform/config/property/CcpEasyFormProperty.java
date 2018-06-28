@@ -2,7 +2,7 @@ package br.com.cfsystems.ccpeasyform.config.property;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties("ccp-easyform")
+@ConfigurationProperties("ccpeasyform")
 public class CcpEasyFormProperty {
 
 	private String originPermitida = "http://localhost:8000";
