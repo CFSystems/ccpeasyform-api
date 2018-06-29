@@ -48,7 +48,7 @@ public class PerguntaResource {
 	}
 
 	@PostMapping
-	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_CATEGORIA') and #oauth2.hasScope('read')")
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_PERGUNTA') and #oauth2.hasScope('write')")
 	public ResponseEntity<Pergunta> criar(@Valid @RequestBody Pergunta pergunta, HttpServletResponse response) {
 		Pergunta perguntaSalva = perguntaService.salvar(pergunta);
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, perguntaSalva.getId()));
@@ -64,13 +64,13 @@ public class PerguntaResource {
 	
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_CATEGORIA') and #oauth2.hasScope('read')")
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_PERGUNTA') and #oauth2.hasScope('write')")
 	public void remover(@PathVariable Long id) {
 		perguntaRepository.deleteById(id);
 	}
 	
 	@PutMapping("/{id}")
-	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_CATEGORIA') and #oauth2.hasScope('read')")
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_PERGUNTA') and #oauth2.hasScope('write')")
 	public ResponseEntity<Pergunta> atualizar(@PathVariable Long id, @Valid @RequestBody Pergunta pergunta) {
 		Pergunta perguntaSalva = perguntaService.atualizar(id, pergunta);
 		return ResponseEntity.ok(perguntaSalva);
@@ -78,7 +78,7 @@ public class PerguntaResource {
 	
 	@PutMapping("/{id}/emUso")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_CATEGORIA') and #oauth2.hasScope('read')")
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_PERGUNTA') and #oauth2.hasScope('write')")
 	public void atualizarPropriedadeEmUso(@PathVariable Long id) {
 		perguntaService.atualizarPropriedadeEmUso(id);
 	}
