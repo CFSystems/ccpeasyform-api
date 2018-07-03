@@ -1,8 +1,6 @@
 package br.com.cfsystems.ccpeasyform.model;
 
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -27,8 +25,8 @@ public class Pergunta {
 	private String descricao;
 	
 	@NotNull
-	@Enumerated(EnumType.STRING)
-	private TipoPergunta tipo;
+	@Size(min = 5, max = 50)
+	private String tipo;
 	
 	private Boolean emUso;
 
@@ -56,11 +54,11 @@ public class Pergunta {
 		this.descricao = descricao;
 	}
 
-	public TipoPergunta getTipo() {
+	public String getTipo() {
 		return tipo;
 	}
 
-	public void setTipo(TipoPergunta tipo) {
+	public void setTipo(String tipo) {
 		this.tipo = tipo;
 	}
 	
