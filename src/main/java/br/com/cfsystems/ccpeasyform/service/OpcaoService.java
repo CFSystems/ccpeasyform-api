@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import br.com.cfsystems.ccpeasyform.exceptionhandler.PerguntaEmUsoException;
 import br.com.cfsystems.ccpeasyform.model.Opcao;
 import br.com.cfsystems.ccpeasyform.repository.OpcaoRepository;
 
@@ -19,10 +18,6 @@ public class OpcaoService {
 	
 	public Opcao atualizar(Long id, Opcao opcao) {
 		Opcao opcaoSalva = buscarOpcaoPeloCodigo(id);
-		
-		if(opcaoSalva.getPergunta().getEmUso()) {
-			throw new PerguntaEmUsoException();
-		}
 		
 		BeanUtils.copyProperties(opcao, opcaoSalva, "id");
 		return opcaoRepository.save(opcaoSalva);

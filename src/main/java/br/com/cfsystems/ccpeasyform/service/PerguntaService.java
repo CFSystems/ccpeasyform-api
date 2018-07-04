@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import br.com.cfsystems.ccpeasyform.exceptionhandler.PerguntaEmUsoException;
 import br.com.cfsystems.ccpeasyform.model.Pergunta;
 import br.com.cfsystems.ccpeasyform.repository.PerguntaRepository;
 
@@ -20,18 +19,8 @@ public class PerguntaService {
 	public Pergunta atualizar(Long id, Pergunta pergunta) {
 		Pergunta perguntaSalva = buscarPerguntaPeloCodigo(id);
 		
-		if (perguntaSalva.getEmUso()) {
-			throw new PerguntaEmUsoException();
-		}
-		
-		BeanUtils.copyProperties(pergunta, perguntaSalva, "id", "emUso");
+		BeanUtils.copyProperties(pergunta, perguntaSalva, "id");
 		return perguntaRepository.save(perguntaSalva);
-	}
-
-	public void atualizarPropriedadeEmUso(Long id) {
-		Pergunta perguntaSalva = buscarPerguntaPeloCodigo(id);
-		perguntaSalva.setEmUso(true);
-		perguntaRepository.save(perguntaSalva);
 	}
 	
 	public Pergunta buscarPerguntaPeloCodigo(Long id) {
@@ -43,7 +32,6 @@ public class PerguntaService {
 	}
 
 	public Pergunta salvar(Pergunta pergunta) {
-		pergunta.setEmUso(false);
 		return perguntaRepository.save(pergunta);
 	}	
 	

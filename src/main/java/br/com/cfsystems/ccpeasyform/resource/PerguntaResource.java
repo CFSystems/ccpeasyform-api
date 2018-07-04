@@ -76,11 +76,4 @@ public class PerguntaResource {
 		return ResponseEntity.ok(perguntaSalva);
 	}
 	
-	@PutMapping("/{id}/emUso")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_PERGUNTA') and #oauth2.hasScope('write')")
-	public void atualizarPropriedadeEmUso(@PathVariable Long id) {
-		perguntaService.atualizarPropriedadeEmUso(id);
-	}
-	
 }

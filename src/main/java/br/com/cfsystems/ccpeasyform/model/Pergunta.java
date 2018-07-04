@@ -27,8 +27,6 @@ public class Pergunta {
 	@NotNull
 	@Size(min = 5, max = 50)
 	private String tipo;
-	
-	private Boolean emUso;
 
 	public Long getId() {
 		return id;
@@ -60,14 +58,6 @@ public class Pergunta {
 
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
-	}
-	
-	public Boolean getEmUso() {
-		return emUso;
-	}
-
-	public void setEmUso(Boolean emUso) {
-		this.emUso = emUso;
 	}
 
 	@Override
