@@ -23,10 +23,15 @@ INSERT INTO usuario (nome, email, senha) values ('Maria Silva', 'maria@cfsystems
 
 INSERT INTO permissao (descricao) values ('ROLE_CADASTRAR_PERGUNTA');
 INSERT INTO permissao (descricao) values ('ROLE_PESQUISAR_PERGUNTA');
+INSERT INTO permissao (descricao) values ('ROLE_CADASTRAR_FORMULARIO');
+INSERT INTO permissao (descricao) values ('ROLE_PESQUISAR_FORMULARIO');
 
 -- admin
 INSERT INTO usuario_permissao (id_usuario, id_permissao) values (1, 1);
 INSERT INTO usuario_permissao (id_usuario, id_permissao) values (1, 2);
+INSERT INTO usuario_permissao (id_usuario, id_permissao) values (1, 3);
+INSERT INTO usuario_permissao (id_usuario, id_permissao) values (1, 4);
 
 -- maria
 INSERT INTO usuario_permissao (id_usuario, id_permissao) values (2, 2);
+INSERT INTO usuario_permissao (id_usuario, id_permissao) values (2, 4);
