@@ -25,13 +25,18 @@ INSERT INTO permissao (descricao) values ('ROLE_CADASTRAR_PERGUNTA');
 INSERT INTO permissao (descricao) values ('ROLE_PESQUISAR_PERGUNTA');
 INSERT INTO permissao (descricao) values ('ROLE_CADASTRAR_FORMULARIO');
 INSERT INTO permissao (descricao) values ('ROLE_PESQUISAR_FORMULARIO');
+INSERT INTO permissao (descricao) values ('ROLE_CADASTRAR_CAMPANHA');
+INSERT INTO permissao (descricao) values ('ROLE_PESQUISAR_CAMPANHA');
 
 -- admin
 INSERT INTO usuario_permissao (id_usuario, id_permissao) values (1, 1);
 INSERT INTO usuario_permissao (id_usuario, id_permissao) values (1, 2);
 INSERT INTO usuario_permissao (id_usuario, id_permissao) values (1, 3);
 INSERT INTO usuario_permissao (id_usuario, id_permissao) values (1, 4);
+INSERT INTO usuario_permissao (id_usuario, id_permissao) values (1, 5);
+INSERT INTO usuario_permissao (id_usuario, id_permissao) values (1, 6);
 
 -- maria
 INSERT INTO usuario_permissao (id_usuario, id_permissao) values (2, 2);
 INSERT INTO usuario_permissao (id_usuario, id_permissao) values (2, 4);
+INSERT INTO usuario_permissao (id_usuario, id_permissao) values (2, 6);
