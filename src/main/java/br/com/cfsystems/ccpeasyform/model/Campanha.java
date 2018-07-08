@@ -16,7 +16,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "campanha")
@@ -41,13 +41,13 @@ public class Campanha {
 	@NotNull
 	private String status;
 	
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "campanha_formulario", joinColumns = @JoinColumn(name = "id_campanha"), inverseJoinColumns = @JoinColumn(name = "id_formulario"))
 	private List<Formulario> formularios;
 	
-	@JsonIgnore
+	@JsonBackReference
 	@OneToMany(mappedBy="campanha")
-	private List<Execucao> execucoes;
+	private List<Atendimento> atendimentos;
 
 	public Long getId() {
 		return id;
@@ -105,12 +105,12 @@ public class Campanha {
 		this.formularios = formularios;
 	}
 
-	public List<Execucao> getExecucoes() {
-		return execucoes;
+	public List<Atendimento> getAtendimentos() {
+		return atendimentos;
 	}
 
-	public void setExecucoes(List<Execucao> execucoes) {
-		this.execucoes = execucoes;
+	public void setAtendimentos(List<Atendimento> atendimentos) {
+		this.atendimentos = atendimentos;
 	}
 
 	@Override

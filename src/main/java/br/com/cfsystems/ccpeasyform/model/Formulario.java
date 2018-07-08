@@ -14,7 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "formulario")
@@ -34,9 +34,9 @@ public class Formulario {
 	@JoinTable(name = "formulario_pergunta", joinColumns = @JoinColumn(name = "id_formulario"), inverseJoinColumns = @JoinColumn(name = "id_pergunta"))
 	private List<Pergunta> perguntas;
 	
-	@JsonIgnore
+	@JsonBackReference
 	@OneToMany(mappedBy="formulario")
-	private List<Execucao> execucoes;
+	private List<Atendimento> atendimentos;
 	
 	public Long getId() {
 		return id;
@@ -70,12 +70,12 @@ public class Formulario {
 		this.perguntas = perguntas;
 	}
 	
-	public List<Execucao> getExecucoes() {
-		return execucoes;
+	public List<Atendimento> getAtendimentos() {
+		return atendimentos;
 	}
 
-	public void setExecucoes(List<Execucao> execucoes) {
-		this.execucoes = execucoes;
+	public void setAtendimentos(List<Atendimento> atendimentos) {
+		this.atendimentos = atendimentos;
 	}
 
 	@Override

@@ -10,7 +10,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "usuario")
@@ -28,6 +31,10 @@ public class Usuario {
 	@JoinTable(name = "usuario_permissao", joinColumns = @JoinColumn(name = "id_usuario")
 		, inverseJoinColumns = @JoinColumn(name = "id_permissao"))
 	private List<Permissao> permissoes;
+	
+	@JsonBackReference
+	@OneToMany(mappedBy="usuario")
+	private List<Atendimento> atendimentos;
 
 	public Long getId() {
 		return id;
@@ -67,6 +74,14 @@ public class Usuario {
 
 	public void setPermissoes(List<Permissao> permissoes) {
 		this.permissoes = permissoes;
+	}
+
+	public List<Atendimento> getAtendimentos() {
+		return atendimentos;
+	}
+
+	public void setAtendimentos(List<Atendimento> atendimentos) {
+		this.atendimentos = atendimentos;
 	}
 
 	@Override

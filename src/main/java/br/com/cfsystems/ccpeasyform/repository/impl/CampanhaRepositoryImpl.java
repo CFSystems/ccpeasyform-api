@@ -1,4 +1,4 @@
-package br.com.cfsystems.ccpeasyform.repository;
+package br.com.cfsystems.ccpeasyform.repository.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,37 +16,38 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.util.StringUtils;
 
-import br.com.cfsystems.ccpeasyform.model.Pergunta;
-import br.com.cfsystems.ccpeasyform.repository.filter.PerguntaFilter;
+import br.com.cfsystems.ccpeasyform.model.Campanha;
+import br.com.cfsystems.ccpeasyform.repository.filter.CampanhaFilter;
+import br.com.cfsystems.ccpeasyform.repository.query.CampanhaRepositoryQuery;
 
-public class PerguntaRepositoryImpl implements PerguntaRepositoryQuery{
+public class CampanhaRepositoryImpl implements CampanhaRepositoryQuery{
 
 	@PersistenceContext
 	private EntityManager manager;
 	
 	@Override
-	public Page<Pergunta> filtrar(PerguntaFilter perguntaFilter, Pageable pageable) {
+	public Page<Campanha> filtrar(CampanhaFilter campanhaFilter, Pageable pageable) {
 		CriteriaBuilder builder = manager.getCriteriaBuilder();
-		CriteriaQuery<Pergunta> criteriaQuery = builder.createQuery(Pergunta.class);
+		CriteriaQuery<Campanha> criteriaQuery = builder.createQuery(Campanha.class);
 		
-		Root<Pergunta> root = criteriaQuery.from(Pergunta.class);
+		Root<Campanha> root = criteriaQuery.from(Campanha.class);
 
-		Predicate[] predicates = criarRestricoes(perguntaFilter, builder, root);
+		Predicate[] predicates = criarRestricoes(campanhaFilter, builder, root);
 		criteriaQuery.where(predicates);
 		
-		TypedQuery<Pergunta> query = manager.createQuery(criteriaQuery);
+		TypedQuery<Campanha> query = manager.createQuery(criteriaQuery);
 		adicionarRestricoesDePaginacao(query, pageable);
 		
-		return new PageImpl<>(query.getResultList(), pageable, total(perguntaFilter));
+		return new PageImpl<>(query.getResultList(), pageable, total(campanhaFilter));
 	}
 
-	private Predicate[] criarRestricoes(PerguntaFilter perguntaFilter, CriteriaBuilder builder,
-			Root<Pergunta> root) {
+	private Predicate[] criarRestricoes(CampanhaFilter campanhaFilter, CriteriaBuilder builder,
+			Root<Campanha> root) {
 		List<Predicate> predicates = new ArrayList<>();
 
-		if (!StringUtils.isEmpty(perguntaFilter.getNome())) {
+		if (!StringUtils.isEmpty(campanhaFilter.getNome())) {
 			predicates.add(builder.like(builder.lower(root.get("nome")),
-					"%" + perguntaFilter.getNome().toLowerCase() + "%"));
+					"%" + campanhaFilter.getNome().toLowerCase() + "%"));
 		}
 
 		return predicates.toArray(new Predicate[predicates.size()]);
@@ -61,12 +62,12 @@ public class PerguntaRepositoryImpl implements PerguntaRepositoryQuery{
 		query.setMaxResults(totalRegistrosPorPagina);
 	}
 
-	private Long total(PerguntaFilter perguntaFilter) {
+	private Long total(CampanhaFilter campanhaFilter) {
 		CriteriaBuilder builder = manager.getCriteriaBuilder();
 		CriteriaQuery<Long> criteria = builder.createQuery(Long.class);
-		Root<Pergunta> root = criteria.from(Pergunta.class);
+		Root<Campanha> root = criteria.from(Campanha.class);
 
-		Predicate[] predicates = criarRestricoes(perguntaFilter, builder, root);
+		Predicate[] predicates = criarRestricoes(campanhaFilter, builder, root);
 		criteria.where(predicates);
 
 		criteria.select(builder.count(root));

@@ -1,4 +1,4 @@
-package br.com.cfsystems.ccpeasyform.repository;
+package br.com.cfsystems.ccpeasyform.repository.query;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

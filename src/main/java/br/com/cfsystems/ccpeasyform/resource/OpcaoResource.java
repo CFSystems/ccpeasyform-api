@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.cfsystems.ccpeasyform.event.RecursoCriadoEvent;
 import br.com.cfsystems.ccpeasyform.model.Opcao;
 import br.com.cfsystems.ccpeasyform.repository.OpcaoRepository;
-import br.com.cfsystems.ccpeasyform.repository.filter.OpcaoFilter;
 import br.com.cfsystems.ccpeasyform.service.OpcaoService;
 
 @RestController
@@ -40,11 +40,13 @@ public class OpcaoResource {
 	private ApplicationEventPublisher publisher;
 	
 	@GetMapping
-	public List<Opcao> pesquisa(OpcaoFilter opcaoFilter){
-		return opcaoRepository.filtrar(opcaoFilter);
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_PERGUNTA') and #oauth2.hasScope('read')")
+	public List<Opcao> pesquisa(){
+		return opcaoRepository.findAll();
 	}
 
 	@PostMapping
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_PERGUNTA') and #oauth2.hasScope('write')")
 	public ResponseEntity<Opcao> criar(@Valid @RequestBody Opcao opcao, HttpServletResponse response) {
 		Opcao opcaoSalva = opcaoRepository.save(opcao);
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, opcaoSalva.getId()));
@@ -52,6 +54,7 @@ public class OpcaoResource {
 	}
 	
 	@GetMapping("/{id}")
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_PERGUNTA') and #oauth2.hasScope('read')")
 	public ResponseEntity<Opcao> buscarPeloId(@PathVariable Long id) {
 		Optional<Opcao> opcao = opcaoRepository.findById(id);
 		return opcao.isPresent() ? ResponseEntity.ok(opcao.get()) : ResponseEntity.notFound().build();
@@ -59,11 +62,13 @@ public class OpcaoResource {
 	
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_PERGUNTA') and #oauth2.hasScope('write')")
 	public void remover(@PathVariable Long id) {
 		opcaoRepository.deleteById(id);
 	}
 	
 	@PutMapping("/{id}")
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_PERGUNTA') and #oauth2.hasScope('write')")
 	public ResponseEntity<Opcao> atualizar(@PathVariable Long id, @Valid @RequestBody Opcao opcao) {
 		Opcao opcaoSalva = opcaoService.atualizar(id, opcao);
 		return ResponseEntity.ok(opcaoSalva);

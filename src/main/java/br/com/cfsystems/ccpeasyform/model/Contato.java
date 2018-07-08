@@ -10,7 +10,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "contato")
@@ -24,14 +24,14 @@ public class Contato {
 	private String nome;
 	
 	@NotNull
-	private Long cpf;
+	private String cpf;
 	
 	@NotNull
-	private Long identificador;
+	private String identificador;
 	
-	@JsonIgnore
+	@JsonBackReference
 	@OneToMany(mappedBy="contato")
-	private List<Execucao> execucoes;
+	private List<Atendimento> atendimentos;
 
 	public Long getId() {
 		return id;
@@ -49,28 +49,28 @@ public class Contato {
 		this.nome = nome;
 	}
 
-	public Long getCpf() {
+	public String getCpf() {
 		return cpf;
 	}
 
-	public void setCpf(Long cpf) {
+	public void setCpf(String cpf) {
 		this.cpf = cpf;
 	}
 
-	public Long getIdentificador() {
+	public String getIdentificador() {
 		return identificador;
 	}
 
-	public void setIdentificador(Long identificador) {
+	public void setIdentificador(String identificador) {
 		this.identificador = identificador;
 	}
 
-	public List<Execucao> getExecucoes() {
-		return execucoes;
+	public List<Atendimento> getAtendimentos() {
+		return atendimentos;
 	}
 
-	public void setExecucoes(List<Execucao> execucoes) {
-		this.execucoes = execucoes;
+	public void setAtendimentos(List<Atendimento> atendimentos) {
+		this.atendimentos = atendimentos;
 	}
 
 	@Override

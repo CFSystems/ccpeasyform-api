@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import br.com.cfsystems.ccpeasyform.model.Opcao;
 
-public interface OpcaoRepository extends JpaRepository<Opcao, Long>, OpcaoRepositoryQuery{
+public interface OpcaoRepository extends JpaRepository<Opcao, Long> {
 
 }

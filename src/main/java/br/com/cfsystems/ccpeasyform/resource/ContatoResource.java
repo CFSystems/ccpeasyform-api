@@ -40,13 +40,13 @@ public class ContatoResource {
 	private ApplicationEventPublisher publisher;
 	
 	@GetMapping
-	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_CONTATO') and #oauth2.hasScope('read')")
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_ATENDIMENTO') and #oauth2.hasScope('read')")
 	public List<Contato> contato(){
 		return contatoRepository.findAll();
 	}
 
 	@PostMapping
-	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_CONTATO') and #oauth2.hasScope('write')")
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_ATENDIMENTO') and #oauth2.hasScope('write')")
 	public ResponseEntity<Contato> criar(@Valid @RequestBody Contato contato, HttpServletResponse response) {
 		Contato contatoSalvo = contatoService.salvar(contato);
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, contatoSalvo.getId()));
@@ -54,7 +54,7 @@ public class ContatoResource {
 	}
 	
 	@GetMapping("/{id}")
-	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_CONTATO') and #oauth2.hasScope('read')")
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_ATENDIMENTO') and #oauth2.hasScope('read')")
 	public ResponseEntity<Contato> buscarPeloId(@PathVariable Long id) {
 		Optional<Contato> contato = contatoRepository.findById(id);
 		return contato.isPresent() ? ResponseEntity.ok(contato.get()) : ResponseEntity.notFound().build();
@@ -62,13 +62,13 @@ public class ContatoResource {
 	
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_CONTATO') and #oauth2.hasScope('write')")
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_ATENDIMENTO') and #oauth2.hasScope('write')")
 	public void remover(@PathVariable Long id) {
 		contatoRepository.deleteById(id);
 	}
 	
 	@PutMapping("/{id}")
-	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_CONTATO') and #oauth2.hasScope('write')")
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_ATENDIMENTO') and #oauth2.hasScope('write')")
 	public ResponseEntity<Contato> atualizar(@PathVariable Long id, @Valid @RequestBody Contato contato) {
 		Contato contatoSalvo = contatoService.atualizar(id, contato);
 		return ResponseEntity.ok(contatoSalvo);

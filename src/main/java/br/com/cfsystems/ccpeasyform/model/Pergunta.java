@@ -12,6 +12,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "pergunta")
 public class Pergunta {
@@ -34,7 +36,11 @@ public class Pergunta {
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "pergunta")
 	private List<Opcao> opcoes;
-
+	
+	@JsonBackReference
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "pergunta")
+	private List<Resposta> respostas;
+	
 	public Long getId() {
 		return id;
 	}
@@ -73,6 +79,14 @@ public class Pergunta {
 
 	public void setOpcoes(List<Opcao> opcoes) {
 		this.opcoes = opcoes;
+	}
+
+	public List<Resposta> getRespostas() {
+		return respostas;
+	}
+
+	public void setRespostas(List<Resposta> respostas) {
+		this.respostas = respostas;
 	}
 
 	@Override

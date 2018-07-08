@@ -1,8 +1,5 @@
 package br.com.cfsystems.ccpeasyform.model;
 
-import java.time.LocalDate;
-
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -10,33 +7,27 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
-@Table(name = "execucao")
-public class Execucao {
+@Table(name="resposta")
+public class Resposta {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
-
-	@NotNull
-	@ManyToOne
-	@JoinColumn(name="id_contato")
-	private Contato contato;
-
-	@NotNull
-	@ManyToOne
-	@JoinColumn(name="id_campanha")
-	private Campanha campanha;
 	
-	@NotNull
+	@JsonBackReference
 	@ManyToOne
-	@JoinColumn(name="id_formulario")
-	private Formulario formulario;
-
-	@Column(name = "data_execucao")
-	private LocalDate dataExecucao;
+	@JoinColumn(name = "id_atendimento")
+	private Atendimento atendimento;
+	
+	@ManyToOne
+	@JoinColumn(name = "id_pergunta")
+	private Pergunta pergunta;
+	
+	private String resposta;
 
 	public Long getId() {
 		return id;
@@ -46,28 +37,28 @@ public class Execucao {
 		this.id = id;
 	}
 
-	public Contato getContato() {
-		return contato;
+	public Atendimento getAtendimento() {
+		return atendimento;
 	}
 
-	public void setContato(Contato contato) {
-		this.contato = contato;
+	public void setAtendimento(Atendimento atendimento) {
+		this.atendimento = atendimento;
 	}
 
-	public Campanha getCampanha() {
-		return campanha;
+	public Pergunta getPergunta() {
+		return pergunta;
 	}
 
-	public void setCampanha(Campanha campanha) {
-		this.campanha = campanha;
+	public void setPergunta(Pergunta pergunta) {
+		this.pergunta = pergunta;
 	}
 
-	public LocalDate getDataExecucao() {
-		return dataExecucao;
+	public String getResposta() {
+		return resposta;
 	}
 
-	public void setDataExecucao(LocalDate dataExecucao) {
-		this.dataExecucao = dataExecucao;
+	public void setResposta(String resposta) {
+		this.resposta = resposta;
 	}
 
 	@Override
@@ -86,7 +77,7 @@ public class Execucao {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Execucao other = (Execucao) obj;
+		Resposta other = (Resposta) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
