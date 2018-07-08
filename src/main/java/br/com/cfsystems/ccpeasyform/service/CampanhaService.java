@@ -1,5 +1,6 @@
 package br.com.cfsystems.ccpeasyform.service;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
@@ -32,7 +33,23 @@ public class CampanhaService {
 	}
 
 	public Campanha salvar(Campanha campanha) {
+		campanha.setDataInicio(null);
+		campanha.setDataTermino(null);
+		
 		return campanhaRepository.save(campanha);
-	}	
+	}
+	
+	public void mudarStatus(Long id) {
+		Campanha campanhaSalva = buscarCampanhaPeloCodigo(id);
+		if(campanhaSalva.getStatus().equalsIgnoreCase("Pendente")) {
+			campanhaSalva.setStatus("Em Andamento");
+			campanhaSalva.setDataInicio(LocalDate.now());
+			campanhaRepository.save(campanhaSalva);
+		} else if (campanhaSalva.getStatus().equalsIgnoreCase("Em Andamento")) {
+			campanhaSalva.setStatus("Concluída");
+			campanhaSalva.setDataTermino(LocalDate.now());
+			campanhaRepository.save(campanhaSalva);
+		}
+	}
 	
 }

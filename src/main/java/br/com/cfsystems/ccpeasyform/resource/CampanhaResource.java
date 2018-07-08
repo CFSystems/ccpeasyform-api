@@ -76,4 +76,11 @@ public class CampanhaResource {
 		return ResponseEntity.ok(campanhaSalva);
 	}
 	
+	@PutMapping("/{id}/mudarStatus")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_CAMPANHA') and #oauth2.hasScope('write')")
+	public void mudarStatus(@PathVariable Long id) {
+		campanhaService.mudarStatus(id);
+	}
+	
 }

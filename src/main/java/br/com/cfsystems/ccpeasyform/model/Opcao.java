@@ -10,6 +10,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "opcao")
 public class Opcao {
@@ -21,12 +23,12 @@ public class Opcao {
 	@NotNull
 	@Size(min = 1, max = 255)
 	private String nome;
-
-	@NotNull
-	@ManyToOne
-	@JoinColumn(name = "idPergunta")
-	private Pergunta pergunta;
 	
+	@JsonBackReference
+	@ManyToOne
+	@JoinColumn(name = "id_pergunta")
+	private Pergunta pergunta;
+
 	public Long getId() {
 		return id;
 	}

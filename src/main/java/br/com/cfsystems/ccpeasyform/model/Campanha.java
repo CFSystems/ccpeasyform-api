@@ -12,8 +12,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "campanha")
@@ -41,6 +44,10 @@ public class Campanha {
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "campanha_formulario", joinColumns = @JoinColumn(name = "id_campanha"), inverseJoinColumns = @JoinColumn(name = "id_formulario"))
 	private List<Formulario> formularios;
+	
+	@JsonIgnore
+	@OneToMany(mappedBy="campanha")
+	private List<Execucao> execucoes;
 
 	public Long getId() {
 		return id;
@@ -96,6 +103,14 @@ public class Campanha {
 
 	public void setFormularios(List<Formulario> formularios) {
 		this.formularios = formularios;
+	}
+
+	public List<Execucao> getExecucoes() {
+		return execucoes;
+	}
+
+	public void setExecucoes(List<Execucao> execucoes) {
+		this.execucoes = execucoes;
 	}
 
 	@Override

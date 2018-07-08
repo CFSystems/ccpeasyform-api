@@ -1,39 +1,42 @@
 package br.com.cfsystems.ccpeasyform.model;
 
-import java.util.List;
+import java.time.LocalDate;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 @Entity
-@Table(name = "pergunta")
-public class Pergunta {
+@Table(name = "execucao")
+public class Execucao {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@NotNull
-	@Size(min = 5, max = 255)
-	private String nome;
+	@ManyToOne
+	@JoinColumn(name="id_contato")
+	private Contato contato;
 
 	@NotNull
-	@Size(min = 5, max = 255)
-	private String descricao;
-
+	@ManyToOne
+	@JoinColumn(name="id_campanha")
+	private Campanha campanha;
+	
 	@NotNull
-	@Size(min = 5, max = 50)
-	private String tipo;
+	@ManyToOne
+	@JoinColumn(name="id_formulario")
+	private Formulario formulario;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "pergunta")
-	private List<Opcao> opcoes;
+	@Column(name = "data_execucao")
+	private LocalDate dataExecucao;
 
 	public Long getId() {
 		return id;
@@ -43,36 +46,28 @@ public class Pergunta {
 		this.id = id;
 	}
 
-	public String getNome() {
-		return nome;
+	public Contato getContato() {
+		return contato;
 	}
 
-	public void setNome(String nome) {
-		this.nome = nome;
+	public void setContato(Contato contato) {
+		this.contato = contato;
 	}
 
-	public String getDescricao() {
-		return descricao;
+	public Campanha getCampanha() {
+		return campanha;
 	}
 
-	public void setDescricao(String descricao) {
-		this.descricao = descricao;
+	public void setCampanha(Campanha campanha) {
+		this.campanha = campanha;
 	}
 
-	public String getTipo() {
-		return tipo;
+	public LocalDate getDataExecucao() {
+		return dataExecucao;
 	}
 
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
-	}
-
-	public List<Opcao> getOpcoes() {
-		return opcoes;
-	}
-
-	public void setOpcoes(List<Opcao> opcoes) {
-		this.opcoes = opcoes;
+	public void setDataExecucao(LocalDate dataExecucao) {
+		this.dataExecucao = dataExecucao;
 	}
 
 	@Override
@@ -91,7 +86,7 @@ public class Pergunta {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Pergunta other = (Pergunta) obj;
+		Execucao other = (Execucao) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -99,5 +94,5 @@ public class Pergunta {
 			return false;
 		return true;
 	}
-
+	
 }

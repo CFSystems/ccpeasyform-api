@@ -3,13 +3,9 @@ package br.com.cfsystems.ccpeasyform.model;
 import java.util.List;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -17,27 +13,26 @@ import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name = "formulario")
-public class Formulario {
+@Table(name = "contato")
+public class Contato {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
+	
 	@NotNull
 	private String nome;
-
+	
 	@NotNull
-	private boolean ativo;
-
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "formulario_pergunta", joinColumns = @JoinColumn(name = "id_formulario"), inverseJoinColumns = @JoinColumn(name = "id_pergunta"))
-	private List<Pergunta> perguntas;
+	private Long cpf;
+	
+	@NotNull
+	private Long identificador;
 	
 	@JsonIgnore
-	@OneToMany(mappedBy="formulario")
+	@OneToMany(mappedBy="contato")
 	private List<Execucao> execucoes;
-	
+
 	public Long getId() {
 		return id;
 	}
@@ -54,22 +49,22 @@ public class Formulario {
 		this.nome = nome;
 	}
 
-	public boolean isAtivo() {
-		return ativo;
+	public Long getCpf() {
+		return cpf;
 	}
 
-	public void setAtivo(boolean ativo) {
-		this.ativo = ativo;
+	public void setCpf(Long cpf) {
+		this.cpf = cpf;
 	}
 
-	public List<Pergunta> getPerguntas() {
-		return perguntas;
+	public Long getIdentificador() {
+		return identificador;
 	}
 
-	public void setPerguntas(List<Pergunta> perguntas) {
-		this.perguntas = perguntas;
+	public void setIdentificador(Long identificador) {
+		this.identificador = identificador;
 	}
-	
+
 	public List<Execucao> getExecucoes() {
 		return execucoes;
 	}
@@ -94,7 +89,7 @@ public class Formulario {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Formulario other = (Formulario) obj;
+		Contato other = (Contato) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -102,5 +97,5 @@ public class Formulario {
 			return false;
 		return true;
 	}
-
+	
 }
