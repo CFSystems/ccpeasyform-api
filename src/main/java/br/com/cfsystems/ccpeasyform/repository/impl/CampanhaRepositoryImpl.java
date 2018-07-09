@@ -49,6 +49,11 @@ public class CampanhaRepositoryImpl implements CampanhaRepositoryQuery{
 			predicates.add(builder.like(builder.lower(root.get("nome")),
 					"%" + campanhaFilter.getNome().toLowerCase() + "%"));
 		}
+		
+		if (!StringUtils.isEmpty(campanhaFilter.getStatus())) {
+			predicates.add(builder.like(builder.lower(root.get("status")),
+					"%" + campanhaFilter.getStatus().toLowerCase() + "%"));
+		}
 
 		return predicates.toArray(new Predicate[predicates.size()]);
 	}

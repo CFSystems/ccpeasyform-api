@@ -16,45 +16,49 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.util.StringUtils;
 
-import br.com.cfsystems.ccpeasyform.model.Formulario;
-import br.com.cfsystems.ccpeasyform.repository.filter.FormularioFilter;
-import br.com.cfsystems.ccpeasyform.repository.query.FormularioRepositoryQuery;
+import br.com.cfsystems.ccpeasyform.model.Contato;
+import br.com.cfsystems.ccpeasyform.repository.filter.ContatoFilter;
+import br.com.cfsystems.ccpeasyform.repository.query.ContatoRepositoryQuery;
 
-public class FormularioRepositoryImpl implements FormularioRepositoryQuery{
+public class ContatoRepositoryImpl implements ContatoRepositoryQuery{
 
 	@PersistenceContext
 	private EntityManager manager;
 	
 	@Override
-	public Page<Formulario> filtrar(FormularioFilter formularioFilter, Pageable pageable) {
+	public Page<Contato> filtrar(ContatoFilter contatoFilter, Pageable pageable) {
 		CriteriaBuilder builder = manager.getCriteriaBuilder();
-		CriteriaQuery<Formulario> criteriaQuery = builder.createQuery(Formulario.class);
+		CriteriaQuery<Contato> criteriaQuery = builder.createQuery(Contato.class);
 		
-		Root<Formulario> root = criteriaQuery.from(Formulario.class);
+		Root<Contato> root = criteriaQuery.from(Contato.class);
 
-		Predicate[] predicates = criarRestricoes(formularioFilter, builder, root);
+		Predicate[] predicates = criarRestricoes(contatoFilter, builder, root);
 		criteriaQuery.where(predicates);
 		
-		TypedQuery<Formulario> query = manager.createQuery(criteriaQuery);
+		TypedQuery<Contato> query = manager.createQuery(criteriaQuery);
 		adicionarRestricoesDePaginacao(query, pageable);
 		
-		return new PageImpl<>(query.getResultList(), pageable, total(formularioFilter));
+		return new PageImpl<>(query.getResultList(), pageable, total(contatoFilter));
 	}
 
-	private Predicate[] criarRestricoes(FormularioFilter formularioFilter, CriteriaBuilder builder,
-			Root<Formulario> root) {
+	private Predicate[] criarRestricoes(ContatoFilter contatoFilter, CriteriaBuilder builder,
+			Root<Contato> root) {
 		List<Predicate> predicates = new ArrayList<>();
 
-		if (!StringUtils.isEmpty(formularioFilter.getNome())) {
+		if (!StringUtils.isEmpty(contatoFilter.getNome())) {
 			predicates.add(builder.like(builder.lower(root.get("nome")),
-					"%" + formularioFilter.getNome().toLowerCase() + "%"));
+					"%" + contatoFilter.getNome().toLowerCase() + "%"));
 		}
 		
-		if (formularioFilter.isAtivo()) {
-			predicates.add(builder.isTrue(root.<Boolean> get("ativo")));
+		if (!StringUtils.isEmpty(contatoFilter.getCpf())) {
+			predicates.add(builder.like(builder.lower(root.get("cpf")),
+					"%" + contatoFilter.getCpf().toLowerCase() + "%"));
 		}
 		
-		
+		if (!StringUtils.isEmpty(contatoFilter.getIdentificador())) {
+			predicates.add(builder.like(builder.lower(root.get("identificador")),
+					"%" + contatoFilter.getIdentificador().toLowerCase() + "%"));
+		}
 
 		return predicates.toArray(new Predicate[predicates.size()]);
 	}
@@ -68,12 +72,12 @@ public class FormularioRepositoryImpl implements FormularioRepositoryQuery{
 		query.setMaxResults(totalRegistrosPorPagina);
 	}
 
-	private Long total(FormularioFilter formularioFilter) {
+	private Long total(ContatoFilter contatoFilter) {
 		CriteriaBuilder builder = manager.getCriteriaBuilder();
 		CriteriaQuery<Long> criteria = builder.createQuery(Long.class);
-		Root<Formulario> root = criteria.from(Formulario.class);
+		Root<Contato> root = criteria.from(Contato.class);
 
-		Predicate[] predicates = criarRestricoes(formularioFilter, builder, root);
+		Predicate[] predicates = criarRestricoes(contatoFilter, builder, root);
 		criteria.where(predicates);
 
 		criteria.select(builder.count(root));

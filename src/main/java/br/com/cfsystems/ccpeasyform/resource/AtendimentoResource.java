@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.cfsystems.ccpeasyform.event.RecursoCriadoEvent;
 import br.com.cfsystems.ccpeasyform.model.Atendimento;
 import br.com.cfsystems.ccpeasyform.repository.AtendimentoRepository;
+import br.com.cfsystems.ccpeasyform.service.AtendimentoService;
 
 @RestController
 @RequestMapping("/atendimento")
@@ -28,6 +29,9 @@ public class AtendimentoResource {
 	
 	@Autowired
 	private AtendimentoRepository atendimentoRepository;
+	
+	@Autowired
+	private AtendimentoService atendimentoService;
 		
 	@Autowired
 	private ApplicationEventPublisher publisher;
@@ -41,7 +45,7 @@ public class AtendimentoResource {
 	@PostMapping
 	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_ATENDIMENTO') and #oauth2.hasScope('write')")
 	public ResponseEntity<Atendimento> criar(@Valid @RequestBody Atendimento atendimento, HttpServletResponse response) {
-		Atendimento atendimentoSalvo = atendimentoRepository.save(atendimento);
+		Atendimento atendimentoSalvo = atendimentoService.salvar(atendimento);
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, atendimentoSalvo.getId()));
 		return ResponseEntity.status(HttpStatus.CREATED).body(atendimentoSalvo);
 	}

@@ -1,6 +1,5 @@
 package br.com.cfsystems.ccpeasyform.resource;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
@@ -8,6 +7,8 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.cfsystems.ccpeasyform.event.RecursoCriadoEvent;
 import br.com.cfsystems.ccpeasyform.model.Contato;
 import br.com.cfsystems.ccpeasyform.repository.ContatoRepository;
+import br.com.cfsystems.ccpeasyform.repository.filter.ContatoFilter;
 import br.com.cfsystems.ccpeasyform.service.ContatoService;
 
 @RestController
@@ -41,8 +43,8 @@ public class ContatoResource {
 	
 	@GetMapping
 	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_ATENDIMENTO') and #oauth2.hasScope('read')")
-	public List<Contato> contato(){
-		return contatoRepository.findAll();
+	public Page<Contato> contato(ContatoFilter contatoFilter, Pageable pageable ){
+		return contatoRepository.filtrar(contatoFilter, pageable);
 	}
 
 	@PostMapping
