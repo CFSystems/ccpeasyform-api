@@ -5,11 +5,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>br.com.cfsystems</groupId>
-	<artifactId>ccp-easyform</artifactId>
+	<artifactId>ccpeasyform-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 
-	<name>ccp-easyform</name>
+	<name>ccpeasyform-api</name>
 	<description>EasyForm for CCP</description>
 
 	<parent>
@@ -26,6 +26,8 @@
 		
 		<spring-security-oauth2.version>2.2.1.RELEASE</spring-security-oauth2.version>
 		<spring-security-jwt.version>1.0.9.RELEASE</spring-security-jwt.version>
+		
+		<start-class>br.com.cfsystems.ccpeasyform.CcpEasyFormApplication</start-class>
 	</properties>
 
 	<dependencies>
@@ -37,6 +39,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -107,6 +114,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+		<finalName>ccpeasyform-api</finalName>
 	</build>
 
 </project>

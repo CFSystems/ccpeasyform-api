@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT -Dspring.profiles.active=basic-security,prod $JAVA_OPTS -jar target/ccp-easyform*.jar
+web: java -Dserver.port=$PORT -Dspring.profiles.active=basic-security,hml $JAVA_OPTS -jar target/ccpeasyform*.jar
