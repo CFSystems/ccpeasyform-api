@@ -23,64 +23,64 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.cfsystems.ccpeasyform.event.RecursoCriadoEvent;
-import br.com.cfsystems.ccpeasyform.model.Formulario;
-import br.com.cfsystems.ccpeasyform.repository.FormularioRepository;
-import br.com.cfsystems.ccpeasyform.repository.filter.FormularioFilter;
-import br.com.cfsystems.ccpeasyform.service.FormularioService;
+import br.com.cfsystems.ccpeasyform.model.Usuario;
+import br.com.cfsystems.ccpeasyform.repository.UsuarioRepository;
+import br.com.cfsystems.ccpeasyform.repository.filter.UsuarioFilter;
+import br.com.cfsystems.ccpeasyform.service.UsuarioService;
 
 @RestController
-@RequestMapping("/formulario")
-public class FormularioResource {
+@RequestMapping("/usuario")
+public class UsuarioResource {
 	
 	@Autowired
-	private FormularioRepository formularioRepository;
+	private UsuarioRepository usuarioRepository;
 	
 	@Autowired
-	private FormularioService formularioService;
+	private UsuarioService usuarioService;
 	
 	@Autowired
 	private ApplicationEventPublisher publisher;
 	
 	@GetMapping
-	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR','OPERADOR') and #oauth2.hasScope('read')")
-	public Page<Formulario> formulario(FormularioFilter formularioFilter, Pageable pageable){
-		return formularioRepository.filtrar(formularioFilter, pageable);
+	@PreAuthorize("hasAuthority('ADMINISTRADOR') and #oauth2.hasScope('read')")
+	public Page<Usuario> pesquisar(UsuarioFilter usuarioFilter, Pageable pageable){
+		return usuarioRepository.filtrar(usuarioFilter, pageable);
 	}
 
 	@PostMapping
 	@PreAuthorize("hasAuthority('ADMINISTRADOR') and #oauth2.hasScope('write')")
-	public ResponseEntity<Formulario> criar(@Valid @RequestBody Formulario formulario, HttpServletResponse response) {
-		Formulario formularioSalva = formularioService.salvar(formulario);
-		publisher.publishEvent(new RecursoCriadoEvent(this, response, formularioSalva.getId()));
-		return ResponseEntity.status(HttpStatus.CREATED).body(formularioSalva);
+	public ResponseEntity<Usuario> criar(@Valid @RequestBody Usuario usuario, HttpServletResponse response) {
+		Usuario usuarioSalvo = usuarioService.salvar(usuario);
+		publisher.publishEvent(new RecursoCriadoEvent(this, response, usuarioSalvo.getId()));
+		return ResponseEntity.status(HttpStatus.CREATED).body(usuarioSalvo);
 	}
 	
 	@GetMapping("/{id}")
-	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR','OPERADOR') and #oauth2.hasScope('read')")
-	public ResponseEntity<Formulario> buscarPeloId(@PathVariable Long id) {
-		Optional<Formulario> formulario = formularioRepository.findById(id);
-		return formulario.isPresent() ? ResponseEntity.ok(formulario.get()) : ResponseEntity.notFound().build();
+	@PreAuthorize("hasAuthority('ADMINISTRADOR') and #oauth2.hasScope('read')")
+	public ResponseEntity<Usuario> buscarPeloId(@PathVariable Long id) {
+		Optional<Usuario> usuario = usuarioRepository.findById(id);
+		return usuario.isPresent() ? ResponseEntity.ok(usuario.get()) : ResponseEntity.notFound().build();
 	}
 	
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@PreAuthorize("hasAuthority('ADMINISTRADOR') and #oauth2.hasScope('write')")
 	public void remover(@PathVariable Long id) {
-		formularioRepository.deleteById(id);
+		usuarioRepository.deleteById(id);
 	}
 	
 	@PutMapping("/{id}")
 	@PreAuthorize("hasAuthority('ADMINISTRADOR') and #oauth2.hasScope('write')")
-	public ResponseEntity<Formulario> atualizar(@PathVariable Long id, @Valid @RequestBody Formulario formulario) {
-		Formulario formularioSalva = formularioService.atualizar(id, formulario);
-		return ResponseEntity.ok(formularioSalva);
+	public ResponseEntity<Usuario> atualizar(@PathVariable Long id, @Valid @RequestBody Usuario usuario) {
+		Usuario usuarioSalvo = usuarioService.atualizar(id, usuario);
+		return ResponseEntity.ok(usuarioSalvo);
 	}
 	
 	@PutMapping("/{id}/ativo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@PreAuthorize("hasAuthority('ADMINISTRADOR') and #oauth2.hasScope('write')")
 	public void atualizarPropriedadeAtivo(@PathVariable Long id, @RequestBody Boolean ativo) {
-		formularioService.atualizarPropriedadeAtivo(id, ativo);
+		usuarioService.atualizarPropriedadeAtivo(id, ativo);
 	}
 	
 }

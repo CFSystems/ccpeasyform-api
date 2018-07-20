@@ -42,13 +42,13 @@ public class CampanhaResource {
 	private ApplicationEventPublisher publisher;
 	
 	@GetMapping
-	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_CAMPANHA') and #oauth2.hasScope('read')")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR','OPERADOR') and #oauth2.hasScope('read')")
 	public Page<Campanha> campanha(CampanhaFilter campanhaFilter, Pageable pageable){
 		return campanhaRepository.filtrar(campanhaFilter, pageable);
 	}
 
 	@PostMapping
-	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_CAMPANHA') and #oauth2.hasScope('write')")
+	@PreAuthorize("hasAuthority('ADMINISTRADOR') and #oauth2.hasScope('write')")
 	public ResponseEntity<Campanha> criar(@Valid @RequestBody Campanha campanha, HttpServletResponse response) {
 		Campanha campanhaSalva = campanhaService.salvar(campanha);
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, campanhaSalva.getId()));
@@ -56,7 +56,7 @@ public class CampanhaResource {
 	}
 	
 	@GetMapping("/{id}")
-	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_CAMPANHA') and #oauth2.hasScope('read')")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR','OPERADOR') and #oauth2.hasScope('read')")
 	public ResponseEntity<Campanha> buscarPeloId(@PathVariable Long id) {
 		Optional<Campanha> campanha = campanhaRepository.findById(id);
 		return campanha.isPresent() ? ResponseEntity.ok(campanha.get()) : ResponseEntity.notFound().build();
@@ -64,13 +64,13 @@ public class CampanhaResource {
 	
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_CAMPANHA') and #oauth2.hasScope('write')")
+	@PreAuthorize("hasAuthority('ADMINISTRADOR') and #oauth2.hasScope('write')")
 	public void remover(@PathVariable Long id) {
 		campanhaRepository.deleteById(id);
 	}
 	
 	@PutMapping("/{id}")
-	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_CAMPANHA') and #oauth2.hasScope('write')")
+	@PreAuthorize("hasAuthority('ADMINISTRADOR') and #oauth2.hasScope('write')")
 	public ResponseEntity<Campanha> atualizar(@PathVariable Long id, @Valid @RequestBody Campanha campanha) {
 		Campanha campanhaSalva = campanhaService.atualizar(id, campanha);
 		return ResponseEntity.ok(campanhaSalva);
@@ -78,7 +78,7 @@ public class CampanhaResource {
 	
 	@PutMapping("/{id}/mudarStatus")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_CAMPANHA') and #oauth2.hasScope('write')")
+	@PreAuthorize("hasAuthority('ADMINISTRADOR') and #oauth2.hasScope('write')")
 	public void mudarStatus(@PathVariable Long id) {
 		campanhaService.mudarStatus(id);
 	}

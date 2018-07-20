@@ -40,13 +40,13 @@ public class OpcaoResource {
 	private ApplicationEventPublisher publisher;
 	
 	@GetMapping
-	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_PERGUNTA') and #oauth2.hasScope('read')")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR','OPERADOR') and #oauth2.hasScope('read')")
 	public List<Opcao> pesquisa(){
 		return opcaoRepository.findAll();
 	}
 
 	@PostMapping
-	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_PERGUNTA') and #oauth2.hasScope('write')")
+	@PreAuthorize("hasAuthority('ADMINISTRADOR') and #oauth2.hasScope('write')")
 	public ResponseEntity<Opcao> criar(@Valid @RequestBody Opcao opcao, HttpServletResponse response) {
 		Opcao opcaoSalva = opcaoRepository.save(opcao);
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, opcaoSalva.getId()));
@@ -54,7 +54,7 @@ public class OpcaoResource {
 	}
 	
 	@GetMapping("/{id}")
-	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_PERGUNTA') and #oauth2.hasScope('read')")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR','OPERADOR') and #oauth2.hasScope('read')")
 	public ResponseEntity<Opcao> buscarPeloId(@PathVariable Long id) {
 		Optional<Opcao> opcao = opcaoRepository.findById(id);
 		return opcao.isPresent() ? ResponseEntity.ok(opcao.get()) : ResponseEntity.notFound().build();
@@ -62,13 +62,13 @@ public class OpcaoResource {
 	
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_PERGUNTA') and #oauth2.hasScope('write')")
+	@PreAuthorize("hasAuthority('ADMINISTRADOR') and #oauth2.hasScope('write')")
 	public void remover(@PathVariable Long id) {
 		opcaoRepository.deleteById(id);
 	}
 	
 	@PutMapping("/{id}")
-	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_PERGUNTA') and #oauth2.hasScope('write')")
+	@PreAuthorize("hasAuthority('ADMINISTRADOR') and #oauth2.hasScope('write')")
 	public ResponseEntity<Opcao> atualizar(@PathVariable Long id, @Valid @RequestBody Opcao opcao) {
 		Opcao opcaoSalva = opcaoService.atualizar(id, opcao);
 		return ResponseEntity.ok(opcaoSalva);

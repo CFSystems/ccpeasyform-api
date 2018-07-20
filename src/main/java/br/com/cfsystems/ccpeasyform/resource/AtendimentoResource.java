@@ -37,13 +37,13 @@ public class AtendimentoResource {
 	private ApplicationEventPublisher publisher;
 	
 	@GetMapping
-	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_ATENDIMENTO') and #oauth2.hasScope('read')")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR','OPERADOR') and #oauth2.hasScope('read')")
 	public List<Atendimento> atendimento(){
 		return atendimentoRepository.findAll();
 	}
 
 	@PostMapping
-	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_ATENDIMENTO') and #oauth2.hasScope('write')")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR','OPERADOR') and #oauth2.hasScope('write')")
 	public ResponseEntity<Atendimento> criar(@Valid @RequestBody Atendimento atendimento, HttpServletResponse response) {
 		Atendimento atendimentoSalvo = atendimentoService.salvar(atendimento);
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, atendimentoSalvo.getId()));
@@ -51,7 +51,7 @@ public class AtendimentoResource {
 	}
 	
 	@GetMapping("/{id}")
-	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_ATENDIMENTO') and #oauth2.hasScope('read')")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR','OPERADOR') and #oauth2.hasScope('read')")
 	public ResponseEntity<Atendimento> buscarPeloId(@PathVariable Long id) {
 		Optional<Atendimento> atendimento = atendimentoRepository.findById(id);
 		return atendimento.isPresent() ? ResponseEntity.ok(atendimento.get()) : ResponseEntity.notFound().build();

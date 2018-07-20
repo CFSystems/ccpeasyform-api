@@ -33,13 +33,13 @@ public class RespostaResource {
 	private ApplicationEventPublisher publisher;
 	
 	@GetMapping
-	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_ATENDIMENTO') and #oauth2.hasScope('read')")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR','OPERADOR') and #oauth2.hasScope('read')")
 	public List<Resposta> pesquisa(){
 		return respostaRepository.findAll();
 	}
 
 	@PostMapping
-	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_ATENDIMENTO') and #oauth2.hasScope('write')")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','OPERADOR') and #oauth2.hasScope('write')")
 	public ResponseEntity<Resposta> criar(@Valid @RequestBody Resposta resposta, HttpServletResponse response) {
 		Resposta respostaSalva = respostaRepository.save(resposta);
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, respostaSalva.getId()));
@@ -47,7 +47,7 @@ public class RespostaResource {
 	}
 	
 	@GetMapping("/{id}")
-	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_ATENDIMENTO') and #oauth2.hasScope('read')")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR','OPERADOR') and #oauth2.hasScope('read')")
 	public ResponseEntity<Resposta> buscarPeloId(@PathVariable Long id) {
 		Optional<Resposta> resposta = respostaRepository.findById(id);
 		return resposta.isPresent() ? ResponseEntity.ok(resposta.get()) : ResponseEntity.notFound().build();

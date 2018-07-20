@@ -24,12 +24,13 @@ public class Usuario {
 	private Long id;
 
 	private String nome;
+	private String matricula;
 	private String email;
 	private String senha;
+	private boolean ativo;
 
 	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "usuario_permissao", joinColumns = @JoinColumn(name = "id_usuario")
-		, inverseJoinColumns = @JoinColumn(name = "id_permissao"))
+	@JoinTable(name = "usuario_permissao", joinColumns = @JoinColumn(name = "id_usuario"), inverseJoinColumns = @JoinColumn(name = "id_permissao"))
 	private List<Permissao> permissoes;
 	
 	@JsonBackReference
@@ -82,6 +83,22 @@ public class Usuario {
 
 	public void setAtendimentos(List<Atendimento> atendimentos) {
 		this.atendimentos = atendimentos;
+	}
+
+	public String getMatricula() {
+		return matricula;
+	}
+
+	public void setMatricula(String matricula) {
+		this.matricula = matricula;
+	}
+
+	public boolean isAtivo() {
+		return ativo;
+	}
+
+	public void setAtivo(boolean ativo) {
+		this.ativo = ativo;
 	}
 
 	@Override
