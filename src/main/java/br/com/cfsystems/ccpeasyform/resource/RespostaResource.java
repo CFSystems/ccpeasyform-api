@@ -39,7 +39,7 @@ public class RespostaResource {
 	}
 
 	@PostMapping
-	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','OPERADOR') and #oauth2.hasScope('write')")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR','OPERADOR') and #oauth2.hasScope('write')")
 	public ResponseEntity<Resposta> criar(@Valid @RequestBody Resposta resposta, HttpServletResponse response) {
 		Resposta respostaSalva = respostaRepository.save(resposta);
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, respostaSalva.getId()));
