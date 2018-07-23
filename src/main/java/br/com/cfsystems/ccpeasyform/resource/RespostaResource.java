@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.cfsystems.ccpeasyform.dto.RespostaEstatisticaFormulario;
 import br.com.cfsystems.ccpeasyform.event.RecursoCriadoEvent;
 import br.com.cfsystems.ccpeasyform.model.Resposta;
 import br.com.cfsystems.ccpeasyform.repository.RespostaRepository;
@@ -28,13 +29,13 @@ public class RespostaResource {
 
 	@Autowired
 	private RespostaRepository respostaRepository;
-	
+
 	@Autowired
 	private ApplicationEventPublisher publisher;
-	
+
 	@GetMapping
 	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR','OPERADOR') and #oauth2.hasScope('read')")
-	public List<Resposta> pesquisa(){
+	public List<Resposta> pesquisa() {
 		return respostaRepository.findAll();
 	}
 
@@ -45,12 +46,19 @@ public class RespostaResource {
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, respostaSalva.getId()));
 		return ResponseEntity.status(HttpStatus.CREATED).body(respostaSalva);
 	}
-	
+
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR','OPERADOR') and #oauth2.hasScope('read')")
 	public ResponseEntity<Resposta> buscarPeloId(@PathVariable Long id) {
 		Optional<Resposta> resposta = respostaRepository.findById(id);
 		return resposta.isPresent() ? ResponseEntity.ok(resposta.get()) : ResponseEntity.notFound().build();
 	}
-	
+
+	@GetMapping("/estatisticas/por-formulario/{idCampanha}/{idFormulario}/{idPergunta}")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR') and #oauth2.hasScope('read')")
+	public List<RespostaEstatisticaFormulario> porFormulario(@PathVariable("idCampanha") Long idCampanha,
+			@PathVariable("idFormulario") Long idFormulario, @PathVariable("idPergunta") Long idPergunta) {
+		return this.respostaRepository.porFormulario(idCampanha, idFormulario, idPergunta);
+	}
+
 }

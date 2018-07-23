@@ -1,5 +1,6 @@
 package br.com.cfsystems.ccpeasyform.resource;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +19,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.cfsystems.ccpeasyform.dto.AtendimentoEstatisticaCampanha;
+import br.com.cfsystems.ccpeasyform.dto.AtendimentoEstatisticaCompleto;
+import br.com.cfsystems.ccpeasyform.dto.AtendimentoEstatisticaDia;
+import br.com.cfsystems.ccpeasyform.dto.AtendimentoEstatisticaUsuario;
 import br.com.cfsystems.ccpeasyform.event.RecursoCriadoEvent;
 import br.com.cfsystems.ccpeasyform.model.Atendimento;
 import br.com.cfsystems.ccpeasyform.repository.AtendimentoRepository;
@@ -55,6 +60,30 @@ public class AtendimentoResource {
 	public ResponseEntity<Atendimento> buscarPeloId(@PathVariable Long id) {
 		Optional<Atendimento> atendimento = atendimentoRepository.findById(id);
 		return atendimento.isPresent() ? ResponseEntity.ok(atendimento.get()) : ResponseEntity.notFound().build();
+	}
+	
+	@GetMapping("/estatisticas/por-campanha")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR') and #oauth2.hasScope('read')")
+	public List<AtendimentoEstatisticaCampanha> porCampanha() {
+		return this.atendimentoRepository.porCampanha();
+	}
+	
+	@GetMapping("/estatisticas/por-usuario")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR') and #oauth2.hasScope('read')")
+	public List<AtendimentoEstatisticaUsuario> porUsuario() {
+		return this.atendimentoRepository.porUsuario();
+	}
+	
+	@GetMapping("/estatisticas/por-dia")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR') and #oauth2.hasScope('read')")
+	public List<AtendimentoEstatisticaDia> porDia() {
+		return this.atendimentoRepository.porDia(LocalDate.now());
+	}
+	
+	@GetMapping("/estatisticas/completo")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR') and #oauth2.hasScope('read')")
+	public List<AtendimentoEstatisticaCompleto> completo() {
+		return this.atendimentoRepository.completo();
 	}
 	
 }
