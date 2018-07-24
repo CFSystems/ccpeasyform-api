@@ -1,1 +1,0 @@
-war:deploy target/ccpeasyform*.war config:set JAVA_OPTS="$JAVA_OPTS -Dspring.profiles.active=oauth-security,hml"
