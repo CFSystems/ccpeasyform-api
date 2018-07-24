@@ -109,7 +109,7 @@ public class AtendimentoRepositoryImpl implements AtendimentoRepositoryQuery {
 		Join<Resposta, Pergunta> pergunta = resposta.join("pergunta");
 
 		criteriaQuery.select(criteriaBuilder.construct(AtendimentoEstatisticaCompleto.class, root.get("id"),
-				contato.get("nome"), campanha.get("nome"), formulario.get("nome"), usuario.get("nome"), root.get("dataAtendimento"),
+				contato.get("nome"), campanha.get("nome"), campanha.get("cliente"), formulario.get("nome"), usuario.get("nome"), root.get("dataAtendimento"),
 				pergunta.get("nome"), resposta.get("resposta")));
 
 		TypedQuery<AtendimentoEstatisticaCompleto> typedQuery = manager.createQuery(criteriaQuery);

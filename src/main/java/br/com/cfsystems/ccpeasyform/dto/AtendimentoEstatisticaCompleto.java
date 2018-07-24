@@ -7,17 +7,19 @@ public class AtendimentoEstatisticaCompleto {
 	private Long id;
 	private String contato;
 	private String campanha;
+	private String cliente;
 	private String formulario;
 	private String usuario;
 	private LocalDate dataAtendimento;
 	private String pergunta;
 	private String resposta;
 	
-	public AtendimentoEstatisticaCompleto(Long id, String contato, String campanha, String formulario, String usuario,
+	public AtendimentoEstatisticaCompleto(Long id, String contato, String campanha, String cliente, String formulario, String usuario,
 			LocalDate dataAtendimento, String pergunta, String resposta) {
 		this.id = id;
 		this.contato = contato;
 		this.campanha = campanha;
+		this.cliente = cliente;
 		this.formulario = formulario;
 		this.usuario = usuario;
 		this.dataAtendimento = dataAtendimento;
@@ -49,6 +51,14 @@ public class AtendimentoEstatisticaCompleto {
 		this.campanha = campanha;
 	}
 
+	public String getCliente() {
+		return cliente;
+	}
+	
+	public void setCliente(String cliente) {
+		this.cliente = cliente;
+	}
+	
 	public String getFormulario() {
 		return formulario;
 	}

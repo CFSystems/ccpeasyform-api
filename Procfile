@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT -Dspring.profiles.active=basic-security,hml $JAVA_OPTS target/ccpeasyform*.war
+war:deploy target/ccpeasyform*.war config:set JAVA_OPTS="$JAVA_OPTS -Dspring.profiles.active=oauth-security,hml"

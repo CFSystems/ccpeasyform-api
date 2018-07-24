@@ -1,17 +1,21 @@
 DROP TABLE usuario_permissao;
-DROP TABLE usuario;
 DROP TABLE permissao;
 
-CREATE TABLE usuario (
-	id BIGINT(20) PRIMARY KEY AUTO_INCREMENT,
-	nome VARCHAR(255) NOT NULL,
-	matricula VARCHAR(50) NOT NULL,
-	email VARCHAR(50) NOT NULL,
-	senha VARCHAR(150) NOT NULL,
-	ativo BOOLEAN NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ALTER TABLE usuario
+	ADD COLUMN matricula VARCHAR(255) NOT NULL AFTER nome,
+	ADD COLUMN ativo BOOLEAN NOT NULL AFTER senha;
+		
+UPDATE usuario
+	SET
+		nome = 'Administrador',
+		matricula = 'adminccp',
+		email = 'admin@ccpeasyform.com',
+		senha = '$2a$10$116/2lKS1LBUnqeH7OL9muiVrNnP6VW0Z9ehPFJqeVCz9tdEG/8gS',
+		ativo = true
+	WHERE id = 1;
 
-INSERT INTO usuario (nome, matricula, email, senha, ativo) values ('Administrador CCP Easy Form', 'adminccp', 'admin@ccpeasyform.com', '$2a$10$116/2lKS1LBUnqeH7OL9muiVrNnP6VW0Z9ehPFJqeVCz9tdEG/8gS', true);
+DELETE FROM usuario
+	WHERE id = 2;
 
 CREATE TABLE permissao (
 	id BIGINT(20) PRIMARY KEY AUTO_INCREMENT,
