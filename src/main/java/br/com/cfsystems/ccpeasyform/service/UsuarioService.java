@@ -17,14 +17,30 @@ public class UsuarioService {
 	@Autowired
 	private UsuarioRepository usuarioRepository;
 	
-	public Usuario atualizar(Long id, Usuario usuario) {
-		Usuario usuarioSalvo = buscarUsuarioPeloCodigo(id);
-		
-		BeanUtils.copyProperties(usuario, usuarioSalvo, "id");
-		return usuarioRepository.save(usuarioSalvo);
+	BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+	String senhaCrypt;
+	
+	public Usuario salvar(Usuario usuario) {
+		this.senhaCrypt = encoder.encode(usuario.getSenha());
+		usuario.setSenha(this.senhaCrypt);
+		return usuarioRepository.save(usuario);
 	}
 	
-	public Usuario buscarUsuarioPeloCodigo(Long id) {
+	public Usuario atualizar(Long id, Usuario usuario) {
+		Usuario usuarioSalvo = buscarUsuarioPeloId(id);
+		
+		if(usuario.getSenha().equals(usuarioSalvo.getSenha())) {
+			BeanUtils.copyProperties(usuario, usuarioSalvo, "id");
+			return usuarioRepository.save(usuarioSalvo);
+		} else {
+			BeanUtils.copyProperties(usuario, usuarioSalvo, "id");
+			this.senhaCrypt = encoder.encode(usuarioSalvo.getSenha());
+			usuarioSalvo.setSenha(this.senhaCrypt);
+			return usuarioRepository.save(usuarioSalvo);
+		}
+	}
+	
+	public Usuario buscarUsuarioPeloId(Long id) {
 		Optional<Usuario> usuarioSalvo = usuarioRepository.findById(id);
 		if (!usuarioSalvo.isPresent()) {
 			throw new EmptyResultDataAccessException(1);
@@ -32,17 +48,10 @@ public class UsuarioService {
 		return usuarioSalvo.get();
 	}
 
-	public Usuario salvar(Usuario usuario) {
-		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-		usuario.setSenha(encoder.encode(usuario.getSenha()));
-		return usuarioRepository.save(usuario);
-	}
-	
 	public void atualizarPropriedadeAtivo(Long id, Boolean ativo) {
-		Usuario usuarioSalvo = buscarUsuarioPeloCodigo(id);
+		Usuario usuarioSalvo = buscarUsuarioPeloId(id);
 		usuarioSalvo.setAtivo(ativo);
 		usuarioRepository.save(usuarioSalvo);
 	}
-	
-	
+		
 }
