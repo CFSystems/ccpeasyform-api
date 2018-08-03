@@ -1,5 +1,6 @@
 package br.com.cfsystems.ccpeasyform.resource;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
@@ -46,6 +47,19 @@ public class ContatoResource {
 	public Page<Contato> contato(ContatoFilter contatoFilter, Pageable pageable ){
 		return contatoRepository.filtrar(contatoFilter, pageable);
 	}
+	
+	@GetMapping("/listar")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR','OPERADOR') and #oauth2.hasScope('read')")
+	public List<Contato> listar(){
+		return contatoRepository.findAll();
+	}
+	
+	@GetMapping("/{id}")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR','OPERADOR') and #oauth2.hasScope('read')")
+	public ResponseEntity<Contato> buscarPeloId(@PathVariable Long id) {
+		Optional<Contato> contato = contatoRepository.findById(id);
+		return contato.isPresent() ? ResponseEntity.ok(contato.get()) : ResponseEntity.notFound().build();
+	}
 
 	@PostMapping
 	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR','OPERADOR') and #oauth2.hasScope('write')")
@@ -55,11 +69,11 @@ public class ContatoResource {
 		return ResponseEntity.status(HttpStatus.CREATED).body(contatoSalvo);
 	}
 	
-	@GetMapping("/{id}")
-	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR','OPERADOR') and #oauth2.hasScope('read')")
-	public ResponseEntity<Contato> buscarPeloId(@PathVariable Long id) {
-		Optional<Contato> contato = contatoRepository.findById(id);
-		return contato.isPresent() ? ResponseEntity.ok(contato.get()) : ResponseEntity.notFound().build();
+	@PutMapping("/{id}")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR','OPERADOR') and #oauth2.hasScope('write')")
+	public ResponseEntity<Contato> atualizar(@PathVariable Long id, @Valid @RequestBody Contato contato) {
+		Contato contatoSalvo = contatoService.atualizar(id, contato);
+		return ResponseEntity.ok(contatoSalvo);
 	}
 	
 	@DeleteMapping("/{id}")
@@ -67,13 +81,6 @@ public class ContatoResource {
 	@PreAuthorize("hasAuthority('ADMINISTRADOR') and #oauth2.hasScope('write')")
 	public void remover(@PathVariable Long id) {
 		contatoRepository.deleteById(id);
-	}
-	
-	@PutMapping("/{id}")
-	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR','OPERADOR') and #oauth2.hasScope('write')")
-	public ResponseEntity<Contato> atualizar(@PathVariable Long id, @Valid @RequestBody Contato contato) {
-		Contato contatoSalvo = contatoService.atualizar(id, contato);
-		return ResponseEntity.ok(contatoSalvo);
 	}
 	
 }

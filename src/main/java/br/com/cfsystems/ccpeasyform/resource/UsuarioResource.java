@@ -1,5 +1,6 @@
 package br.com.cfsystems.ccpeasyform.resource;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
@@ -46,13 +47,11 @@ public class UsuarioResource {
 	public Page<Usuario> pesquisar(UsuarioFilter usuarioFilter, Pageable pageable){
 		return usuarioRepository.filtrar(usuarioFilter, pageable);
 	}
-
-	@PostMapping
-	@PreAuthorize("hasAuthority('ADMINISTRADOR') and #oauth2.hasScope('write')")
-	public ResponseEntity<Usuario> criar(@Valid @RequestBody Usuario usuario, HttpServletResponse response) {
-		Usuario usuarioSalvo = usuarioService.salvar(usuario);
-		publisher.publishEvent(new RecursoCriadoEvent(this, response, usuarioSalvo.getId()));
-		return ResponseEntity.status(HttpStatus.CREATED).body(usuarioSalvo);
+	
+	@GetMapping("/listar")
+	@PreAuthorize("hasAuthority('ADMINISTRADOR') and #oauth2.hasScope('read')")
+	public List<Usuario> listar() {
+		return usuarioRepository.findAll();
 	}
 	
 	@GetMapping("/{id}")
@@ -61,12 +60,13 @@ public class UsuarioResource {
 		Optional<Usuario> usuario = usuarioRepository.findById(id);
 		return usuario.isPresent() ? ResponseEntity.ok(usuario.get()) : ResponseEntity.notFound().build();
 	}
-	
-	@DeleteMapping("/{id}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
+
+	@PostMapping
 	@PreAuthorize("hasAuthority('ADMINISTRADOR') and #oauth2.hasScope('write')")
-	public void remover(@PathVariable Long id) {
-		usuarioRepository.deleteById(id);
+	public ResponseEntity<Usuario> criar(@Valid @RequestBody Usuario usuario, HttpServletResponse response) {
+		Usuario usuarioSalvo = usuarioService.salvar(usuario);
+		publisher.publishEvent(new RecursoCriadoEvent(this, response, usuarioSalvo.getId()));
+		return ResponseEntity.status(HttpStatus.CREATED).body(usuarioSalvo);
 	}
 	
 	@PutMapping("/{id}")
@@ -81,6 +81,13 @@ public class UsuarioResource {
 	@PreAuthorize("hasAuthority('ADMINISTRADOR') and #oauth2.hasScope('write')")
 	public void atualizarPropriedadeAtivo(@PathVariable Long id, @RequestBody Boolean ativo) {
 		usuarioService.atualizarPropriedadeAtivo(id, ativo);
+	}
+	
+	@DeleteMapping("/{id}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@PreAuthorize("hasAuthority('ADMINISTRADOR') and #oauth2.hasScope('write')")
+	public void remover(@PathVariable Long id) {
+		usuarioRepository.deleteById(id);
 	}
 	
 }

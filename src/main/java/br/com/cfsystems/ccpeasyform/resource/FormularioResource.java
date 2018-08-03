@@ -1,5 +1,6 @@
 package br.com.cfsystems.ccpeasyform.resource;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
@@ -46,13 +47,17 @@ public class FormularioResource {
 	public Page<Formulario> formulario(FormularioFilter formularioFilter, Pageable pageable){
 		return formularioRepository.filtrar(formularioFilter, pageable);
 	}
-
-	@PostMapping
-	@PreAuthorize("hasAuthority('ADMINISTRADOR') and #oauth2.hasScope('write')")
-	public ResponseEntity<Formulario> criar(@Valid @RequestBody Formulario formulario, HttpServletResponse response) {
-		Formulario formularioSalva = formularioService.salvar(formulario);
-		publisher.publishEvent(new RecursoCriadoEvent(this, response, formularioSalva.getId()));
-		return ResponseEntity.status(HttpStatus.CREATED).body(formularioSalva);
+	
+	@GetMapping("/listar")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR','OPERADOR') and #oauth2.hasScope('read')")
+	public List<Formulario> listar() {
+		return formularioRepository.findAll();
+	}
+	
+	@GetMapping("/listarAtivos")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR','OPERADOR') and #oauth2.hasScope('read')")
+	public List<Formulario> listarAtivos() {
+		return formularioRepository.listarAtivos();
 	}
 	
 	@GetMapping("/{id}")
@@ -61,12 +66,13 @@ public class FormularioResource {
 		Optional<Formulario> formulario = formularioRepository.findById(id);
 		return formulario.isPresent() ? ResponseEntity.ok(formulario.get()) : ResponseEntity.notFound().build();
 	}
-	
-	@DeleteMapping("/{id}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
+
+	@PostMapping
 	@PreAuthorize("hasAuthority('ADMINISTRADOR') and #oauth2.hasScope('write')")
-	public void remover(@PathVariable Long id) {
-		formularioRepository.deleteById(id);
+	public ResponseEntity<Formulario> criar(@Valid @RequestBody Formulario formulario, HttpServletResponse response) {
+		Formulario formularioSalva = formularioService.salvar(formulario);
+		publisher.publishEvent(new RecursoCriadoEvent(this, response, formularioSalva.getId()));
+		return ResponseEntity.status(HttpStatus.CREATED).body(formularioSalva);
 	}
 	
 	@PutMapping("/{id}")
@@ -83,4 +89,10 @@ public class FormularioResource {
 		formularioService.atualizarPropriedadeAtivo(id, ativo);
 	}
 	
+	@DeleteMapping("/{id}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@PreAuthorize("hasAuthority('ADMINISTRADOR') and #oauth2.hasScope('write')")
+	public void remover(@PathVariable Long id) {
+		formularioRepository.deleteById(id);
+	}
 }

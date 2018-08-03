@@ -41,10 +41,17 @@ public class OpcaoResource {
 	
 	@GetMapping
 	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR','OPERADOR') and #oauth2.hasScope('read')")
-	public List<Opcao> pesquisa(){
+	public List<Opcao> listar(){
 		return opcaoRepository.findAll();
 	}
 
+	@GetMapping("/{id}")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR','OPERADOR') and #oauth2.hasScope('read')")
+	public ResponseEntity<Opcao> buscarPeloId(@PathVariable Long id) {
+		Optional<Opcao> opcao = opcaoRepository.findById(id);
+		return opcao.isPresent() ? ResponseEntity.ok(opcao.get()) : ResponseEntity.notFound().build();
+	}
+	
 	@PostMapping
 	@PreAuthorize("hasAuthority('ADMINISTRADOR') and #oauth2.hasScope('write')")
 	public ResponseEntity<Opcao> criar(@Valid @RequestBody Opcao opcao, HttpServletResponse response) {
@@ -53,11 +60,11 @@ public class OpcaoResource {
 		return ResponseEntity.status(HttpStatus.CREATED).body(opcaoSalva);
 	}
 	
-	@GetMapping("/{id}")
-	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR','OPERADOR') and #oauth2.hasScope('read')")
-	public ResponseEntity<Opcao> buscarPeloId(@PathVariable Long id) {
-		Optional<Opcao> opcao = opcaoRepository.findById(id);
-		return opcao.isPresent() ? ResponseEntity.ok(opcao.get()) : ResponseEntity.notFound().build();
+	@PutMapping("/{id}")
+	@PreAuthorize("hasAuthority('ADMINISTRADOR') and #oauth2.hasScope('write')")
+	public ResponseEntity<Opcao> atualizar(@PathVariable Long id, @Valid @RequestBody Opcao opcao) {
+		Opcao opcaoSalva = opcaoService.atualizar(id, opcao);
+		return ResponseEntity.ok(opcaoSalva);
 	}
 	
 	@DeleteMapping("/{id}")
@@ -65,13 +72,6 @@ public class OpcaoResource {
 	@PreAuthorize("hasAuthority('ADMINISTRADOR') and #oauth2.hasScope('write')")
 	public void remover(@PathVariable Long id) {
 		opcaoRepository.deleteById(id);
-	}
-	
-	@PutMapping("/{id}")
-	@PreAuthorize("hasAuthority('ADMINISTRADOR') and #oauth2.hasScope('write')")
-	public ResponseEntity<Opcao> atualizar(@PathVariable Long id, @Valid @RequestBody Opcao opcao) {
-		Opcao opcaoSalva = opcaoService.atualizar(id, opcao);
-		return ResponseEntity.ok(opcaoSalva);
 	}
 	
 }

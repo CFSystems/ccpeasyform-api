@@ -26,6 +26,20 @@ public class FormularioRepositoryImpl implements FormularioRepositoryQuery{
 	private EntityManager manager;
 	
 	@Override
+	public List<Formulario> listarAtivos() {
+		CriteriaBuilder builder = manager.getCriteriaBuilder();
+		CriteriaQuery<Formulario> criteriaQuery = builder.createQuery(Formulario.class);
+		
+		Root<Formulario> root = criteriaQuery.from(Formulario.class);
+		
+		criteriaQuery.where(builder.equal(root.get("ativo"), true));
+		
+		TypedQuery<Formulario> query = manager.createQuery(criteriaQuery);
+		
+		return query.getResultList();
+	}
+	
+	@Override
 	public Page<Formulario> filtrar(FormularioFilter formularioFilter, Pageable pageable) {
 		CriteriaBuilder builder = manager.getCriteriaBuilder();
 		CriteriaQuery<Formulario> criteriaQuery = builder.createQuery(Formulario.class);
@@ -54,8 +68,6 @@ public class FormularioRepositoryImpl implements FormularioRepositoryQuery{
 			predicates.add(builder.isTrue(root.<Boolean> get("ativo")));
 		}
 		
-		
-
 		return predicates.toArray(new Predicate[predicates.size()]);
 	}
 	

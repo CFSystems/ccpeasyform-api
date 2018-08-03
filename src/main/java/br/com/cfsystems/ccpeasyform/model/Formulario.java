@@ -3,13 +3,9 @@ package br.com.cfsystems.ccpeasyform.model;
 import java.util.List;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -30,14 +26,13 @@ public class Formulario {
 	@NotNull
 	private boolean ativo;
 
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "formulario_pergunta", joinColumns = @JoinColumn(name = "id_formulario"), inverseJoinColumns = @JoinColumn(name = "id_pergunta"))
-	private List<Pergunta> perguntas;
-	
+	@OneToMany(mappedBy = "formulario")
+	private List<FormularioPergunta> formularioPergunta;
+
 	@JsonBackReference
-	@OneToMany(mappedBy="formulario")
+	@OneToMany(mappedBy = "formulario")
 	private List<Atendimento> atendimentos;
-	
+
 	public Long getId() {
 		return id;
 	}
@@ -62,14 +57,14 @@ public class Formulario {
 		this.ativo = ativo;
 	}
 
-	public List<Pergunta> getPerguntas() {
-		return perguntas;
+	public List<FormularioPergunta> getFormularioPergunta() {
+		return formularioPergunta;
 	}
 
-	public void setPerguntas(List<Pergunta> perguntas) {
-		this.perguntas = perguntas;
+	public void setFormularioPergunta(List<FormularioPergunta> formularioPergunta) {
+		this.formularioPergunta = formularioPergunta;
 	}
-	
+
 	public List<Atendimento> getAtendimentos() {
 		return atendimentos;
 	}

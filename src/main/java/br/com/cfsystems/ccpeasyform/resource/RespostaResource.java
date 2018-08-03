@@ -35,8 +35,22 @@ public class RespostaResource {
 
 	@GetMapping
 	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR','OPERADOR') and #oauth2.hasScope('read')")
-	public List<Resposta> pesquisa() {
+	public List<Resposta> listar() {
 		return respostaRepository.findAll();
+	}
+	
+	@GetMapping("/{id}")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR','OPERADOR') and #oauth2.hasScope('read')")
+	public ResponseEntity<Resposta> buscarPeloId(@PathVariable Long id) {
+		Optional<Resposta> resposta = respostaRepository.findById(id);
+		return resposta.isPresent() ? ResponseEntity.ok(resposta.get()) : ResponseEntity.notFound().build();
+	}
+	
+	@GetMapping("/estatisticas/por-formulario/{idCampanha}/{idFormulario}/{idPergunta}")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR') and #oauth2.hasScope('read')")
+	public List<RespostaEstatisticaFormulario> porFormulario(@PathVariable("idCampanha") Long idCampanha,
+			@PathVariable("idFormulario") Long idFormulario, @PathVariable("idPergunta") Long idPergunta) {
+		return this.respostaRepository.porFormulario(idCampanha, idFormulario, idPergunta);
 	}
 
 	@PostMapping
@@ -45,20 +59,6 @@ public class RespostaResource {
 		Resposta respostaSalva = respostaRepository.save(resposta);
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, respostaSalva.getId()));
 		return ResponseEntity.status(HttpStatus.CREATED).body(respostaSalva);
-	}
-
-	@GetMapping("/{id}")
-	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR','OPERADOR') and #oauth2.hasScope('read')")
-	public ResponseEntity<Resposta> buscarPeloId(@PathVariable Long id) {
-		Optional<Resposta> resposta = respostaRepository.findById(id);
-		return resposta.isPresent() ? ResponseEntity.ok(resposta.get()) : ResponseEntity.notFound().build();
-	}
-
-	@GetMapping("/estatisticas/por-formulario/{idCampanha}/{idFormulario}/{idPergunta}")
-	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR') and #oauth2.hasScope('read')")
-	public List<RespostaEstatisticaFormulario> porFormulario(@PathVariable("idCampanha") Long idCampanha,
-			@PathVariable("idFormulario") Long idFormulario, @PathVariable("idPergunta") Long idPergunta) {
-		return this.respostaRepository.porFormulario(idCampanha, idFormulario, idPergunta);
 	}
 
 }

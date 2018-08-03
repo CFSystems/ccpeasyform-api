@@ -47,18 +47,18 @@ public class CampanhaResource {
 	public Page<Campanha> campanha(CampanhaFilter campanhaFilter, Pageable pageable) {
 		return campanhaRepository.filtrar(campanhaFilter, pageable);
 	}
+	
+	@GetMapping("/listar")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR','OPERADOR') and #oauth2.hasScope('read')")
+	public List<Campanha> listar() {
+		return campanhaRepository.findAll(); 
+	}
 
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR','OPERADOR') and #oauth2.hasScope('read')")
 	public ResponseEntity<Campanha> buscarPeloId(@PathVariable Long id) {
 		Optional<Campanha> campanha = campanhaRepository.findById(id);
 		return campanha.isPresent() ? ResponseEntity.ok(campanha.get()) : ResponseEntity.notFound().build();
-	}
-
-	@GetMapping("/listar")
-	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR','OPERADOR') and #oauth2.hasScope('read')")
-	public List<Campanha> listar() {
-		return campanhaRepository.findAll(); 
 	}
 
 	@PostMapping
@@ -68,26 +68,26 @@ public class CampanhaResource {
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, campanhaSalva.getId()));
 		return ResponseEntity.status(HttpStatus.CREATED).body(campanhaSalva);
 	}
-
-	@DeleteMapping("/{id}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@PreAuthorize("hasAuthority('ADMINISTRADOR') and #oauth2.hasScope('write')")
-	public void remover(@PathVariable Long id) {
-		campanhaRepository.deleteById(id);
-	}
-
+	
 	@PutMapping("/{id}")
 	@PreAuthorize("hasAuthority('ADMINISTRADOR') and #oauth2.hasScope('write')")
 	public ResponseEntity<Campanha> atualizar(@PathVariable Long id, @Valid @RequestBody Campanha campanha) {
 		Campanha campanhaSalva = campanhaService.atualizar(id, campanha);
 		return ResponseEntity.ok(campanhaSalva);
 	}
-
+	
 	@PutMapping("/{id}/mudarStatus")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@PreAuthorize("hasAuthority('ADMINISTRADOR') and #oauth2.hasScope('write')")
 	public void mudarStatus(@PathVariable Long id) {
 		campanhaService.mudarStatus(id);
+	}
+
+	@DeleteMapping("/{id}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@PreAuthorize("hasAuthority('ADMINISTRADOR') and #oauth2.hasScope('write')")
+	public void remover(@PathVariable Long id) {
+		campanhaRepository.deleteById(id);
 	}
 
 }

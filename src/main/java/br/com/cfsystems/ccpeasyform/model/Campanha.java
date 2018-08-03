@@ -5,13 +5,9 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -25,28 +21,27 @@ public class Campanha {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@NotNull
 	private String nome;
-	
+
 	@NotNull
 	private String cliente;
-	
-	@Column(name="data_inicio")
+
+	@Column(name = "data_inicio")
 	private LocalDate dataInicio;
-	
-	@Column(name="data_termino")
+
+	@Column(name = "data_termino")
 	private LocalDate dataTermino;
-	
+
 	@NotNull
 	private String status;
-	
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "campanha_formulario", joinColumns = @JoinColumn(name = "id_campanha"), inverseJoinColumns = @JoinColumn(name = "id_formulario"))
-	private List<Formulario> formularios;
-	
+
+	@OneToMany(mappedBy = "campanha")
+	private List<CampanhaFormulario> campanhaFormulario;
+
 	@JsonBackReference
-	@OneToMany(mappedBy="campanha")
+	@OneToMany(mappedBy = "campanha")
 	private List<Atendimento> atendimentos;
 
 	public Long getId() {
@@ -97,12 +92,12 @@ public class Campanha {
 		this.status = status;
 	}
 
-	public List<Formulario> getFormularios() {
-		return formularios;
+	public List<CampanhaFormulario> getCampanhaFormulario() {
+		return campanhaFormulario;
 	}
 
-	public void setFormularios(List<Formulario> formularios) {
-		this.formularios = formularios;
+	public void setCampanhaFormulario(List<CampanhaFormulario> campanhaFormulario) {
+		this.campanhaFormulario = campanhaFormulario;
 	}
 
 	public List<Atendimento> getAtendimentos() {
@@ -137,5 +132,5 @@ public class Campanha {
 			return false;
 		return true;
 	}
-	
+
 }

@@ -46,14 +46,6 @@ public class AtendimentoResource {
 	public List<Atendimento> atendimento(){
 		return atendimentoRepository.findAll();
 	}
-
-	@PostMapping
-	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR','OPERADOR') and #oauth2.hasScope('write')")
-	public ResponseEntity<Atendimento> criar(@Valid @RequestBody Atendimento atendimento, HttpServletResponse response) {
-		Atendimento atendimentoSalvo = atendimentoService.salvar(atendimento);
-		publisher.publishEvent(new RecursoCriadoEvent(this, response, atendimentoSalvo.getId()));
-		return ResponseEntity.status(HttpStatus.CREATED).body(atendimentoSalvo);
-	}
 	
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR','OPERADOR') and #oauth2.hasScope('read')")
@@ -84,6 +76,14 @@ public class AtendimentoResource {
 	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR') and #oauth2.hasScope('read')")
 	public List<AtendimentoEstatisticaCompleto> completo() {
 		return this.atendimentoRepository.completo();
+	}
+
+	@PostMapping
+	@PreAuthorize("hasAnyAuthority('ADMINISTRADOR','SUPERVISOR','OPERADOR') and #oauth2.hasScope('write')")
+	public ResponseEntity<Atendimento> criar(@Valid @RequestBody Atendimento atendimento, HttpServletResponse response) {
+		Atendimento atendimentoSalvo = atendimentoService.salvar(atendimento);
+		publisher.publishEvent(new RecursoCriadoEvent(this, response, atendimentoSalvo.getId()));
+		return ResponseEntity.status(HttpStatus.CREATED).body(atendimentoSalvo);
 	}
 	
 }
