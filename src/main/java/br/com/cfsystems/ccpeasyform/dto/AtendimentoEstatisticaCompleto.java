@@ -6,6 +6,9 @@ public class AtendimentoEstatisticaCompleto {
 
 	private Long id;
 	private String contato;
+	private Long idContato;
+	private String cpfContato;
+	private String identifContato;
 	private String campanha;
 	private String cliente;
 	private String formulario;
@@ -14,10 +17,13 @@ public class AtendimentoEstatisticaCompleto {
 	private String pergunta;
 	private String resposta;
 	
-	public AtendimentoEstatisticaCompleto(Long id, String contato, String campanha, String cliente, String formulario, String usuario,
+	public AtendimentoEstatisticaCompleto(Long id, String contato, Long idContato, String cpfContato, String identifContato, String campanha, String cliente, String formulario, String usuario,
 			LocalDate dataAtendimento, String pergunta, String resposta) {
 		this.id = id;
 		this.contato = contato;
+		this.idContato = idContato;
+		this.cpfContato = cpfContato;
+		this.identifContato = identifContato;
 		this.campanha = campanha;
 		this.cliente = cliente;
 		this.formulario = formulario;
@@ -41,6 +47,30 @@ public class AtendimentoEstatisticaCompleto {
 
 	public void setContato(String contato) {
 		this.contato = contato;
+	}
+
+	public Long getIdContato() {
+		return idContato;
+	}
+
+	public void setIdContato(Long idContato) {
+		this.idContato = idContato;
+	}
+
+	public String getCpfContato() {
+		return cpfContato;
+	}
+
+	public void setCpfContato(String cpfContato) {
+		this.cpfContato = cpfContato;
+	}
+
+	public String getIdentifContato() {
+		return identifContato;
+	}
+
+	public void setIdentifContato(String identifContato) {
+		this.identifContato = identifContato;
 	}
 
 	public String getCampanha() {
